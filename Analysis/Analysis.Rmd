@@ -60,7 +60,7 @@ ggplot(data = aba, aes(x = Viscera.weight)) + geom_histogram(fill = "darkseagree
 
 ggplot(data = aba, aes(x = Shell.weight)) + geom_histogram(fill = "darkseagreen2")
 
-ggplot(data = aba, aes(x = Rings)) + geom_histogram(fill = "darkseagreen3")
+ggplot(data = aba, aes(x = Rings)) + geom_histogram(bins = 29, fill = "darkseagreen3")
 
 # Scatterplot of Diameter and Height
 ggplot(data = aba, aes(x = Diameter, y = Height)) + geom_point()
