@@ -1,9 +1,56 @@
 ---
 title: "Analysis"
-author: "Gianni Spiga"
+author: "Kate Jones, Gianni Spiga"
 date: "2022-11-22"
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE 
+    theme: flatly
+    df_print: paged
+    
 ---
 
 
-### Its Abalonin Time
+# Libraries
+```{r, message = FALSE}
+library(ggplot2)
+library(GGally)
+library(plotly)
+```
+
+# Loading in Data
+```{r}
+aba <- read.table("abalone.txt", sep = ",")
+# Fixing Column names 
+names(aba) <-
+  c(
+    "Sex",
+    "Length",
+    "Diameter",
+    "Height",
+    "Whole weight",
+    "Shucked weight",
+    "Viscera weight",
+    "Shell weight",
+    "Rings"
+  )
+head(aba, 15)
+
+# Search for NA values
+any(is.na(aba))
+```
+# Visualizations
+
+```{r}
+#hist(aba$Length)
+
+# Histrogram of Length
+ggplot(data = aba, aes(x = Length)) + geom_histogram(bins = 20, fill = "dodgerblue")
+
+# Scatterplot of Diameter and Height
+ggplot(data = aba, aes(x = Diameter, y = Height)) + geom_point()
+
+# Scatter plot of Diameter, Rings, and Sex with plotly
+ggplotly(ggplot(data = aba, aes(x = Diameter, y = Rings, color = Sex)) + geom_point())
+```
