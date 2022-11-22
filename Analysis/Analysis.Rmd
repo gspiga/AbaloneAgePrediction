@@ -29,10 +29,10 @@ names(aba) <-
     "Length",
     "Diameter",
     "Height",
-    "Whole weight",
-    "Shucked weight",
-    "Viscera weight",
-    "Shell weight",
+    "Whole.weight",
+    "Shucked.weight",
+    "Viscera.weight",
+    "Shell.weight",
     "Rings"
   )
 head(aba, 15)
@@ -40,12 +40,14 @@ head(aba, 15)
 # Search for NA values
 any(is.na(aba))
 ```
-# Visualizations
 
+# Visualizations
 ```{r}
 #hist(aba$Length)
 
 # Histrogram of Length
+ggplot(data = aba, aes(x = Length)) + geom_histogram(bins = 20, fill = "dodgerblue")
+
 ggplot(data = aba, aes(x = Length)) + geom_histogram(bins = 20, fill = "dodgerblue")
 
 # Scatterplot of Diameter and Height
