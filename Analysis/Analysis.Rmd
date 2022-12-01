@@ -17,6 +17,7 @@ output:
 library(ggplot2)
 library(GGally)
 library(plotly)
+library(ggcorrplot)
 ```
 
 # Loading in Data
@@ -29,13 +30,16 @@ names(aba) <-
     "Length",
     "Diameter",
     "Height",
-    "Whole weight",
-    "Shucked weight",
-    "Viscera weight",
-    "Shell weight",
+    "Whole.weight",
+    "Shucked.weight",
+    "Viscera.weight",
+    "Shell.weight",
     "Rings"
   )
 head(aba, 15)
+
+# Change Sex into factor 
+aba$Sex <- as.factor(aba$Sex)
 
 # Search for NA values
 any(is.na(aba))
@@ -52,5 +56,69 @@ ggplot(data = aba, aes(x = Length)) + geom_histogram(bins = 20, fill = "dodgerbl
 ggplot(data = aba, aes(x = Diameter, y = Height)) + geom_point()
 
 # Scatter plot of Diameter, Rings, and Sex with plotly
-ggplotly(ggplot(data = aba, aes(x = Diameter, y = Rings, color = Sex)) + geom_point())
+ggplotly(ggplot(data = aba, aes(
+  x = Diameter, y = Rings, color = Sex
+)) + geom_point() + scale_color_manual(values = c("#f8674f", "#2887c8", "#9fe2bf")))
+```
+# Checking relationships amongst variables 
+
+```{r}
+corMat <- cor(aba[, -1])
+corMat
+
+# heatPlot <- plot_ly(z = corMat, type = "heatmap")
+# heatPlot
+ggcorrplot(
+  corMat,
+  type = "lower",
+  outline.col = "white",
+  lab = TRUE,
+  color = c("#f8674f", "#2887c8", "#9fe2bf")
+)
+
+# Lots of high multicollinearity!! 
+```
+
+```{r}
+# Initial Model 
+fullMod <- lm(Rings ~ ., data = aba)
+summary(fullMod)
+anova(fullMod)
+```
+
+
+```{r}
+### Checking Assumptions
+plot(fullMod)
+
+# Check for transformation 
+library(MASS)
+boxcox(fullMod)
+
+# Now we use full log model
+logFullMod <- lm(log(Rings) ~ ., data = aba)
+summary(logFullMod)
+
+plot(logFullMod)
+```
+# Addressing Multicollinearity
+
+```{r}
+# Remove Shucked weight since full weight would be easier process
+noShuckMod <- lm(log(Rings) ~ .-Shucked.weight, data = aba)
+summary(noShuckMod)
+
+# Male sex is becoming obviously insignifcant, so lets make new column where abalone is infant or not
+aba$Infant <- as.factor(ifelse(aba$Sex == 'I', 'Y','N'))
+aba$Infant
+
+# Clean model by removing Length, and Viscera weight
+redMod <- lm(log(Rings) ~ Infant + Diameter + Height+ Whole.weight, data = aba)
+summary(redMod)
+```
+
+```{r}
+anova(logFullMod, redMod)
+
+stepAIC(logFullMod, scope = list("lower" = redMod, "upper" = logFullMod), direction = "forward")
 ```
