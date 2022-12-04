@@ -18,6 +18,7 @@ library(ggplot2)
 library(GGally)
 library(plotly)
 library(ggcorrplot)
+library(car)
 ```
 
 # Loading in Data
@@ -98,6 +99,7 @@ ggcorrplot(
 fullMod <- lm(Rings ~ ., data = aba)
 summary(fullMod)
 anova(fullMod)
+vif(fullMod)
 ```
 
 
