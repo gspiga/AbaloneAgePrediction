@@ -58,7 +58,7 @@ ggplot(data = aba, aes(x = Diameter)) + geom_histogram(fill = "darkseagreen2")
 mean(aba$Diameter)
 median(aba$Diameter)
 
-ggplot(data = aba, aes(x = Height)) + geom_histogram(fill = "darkseagreen3")
+ggplot(data = aba, aes(x = Height)) + geom_histogram(fill = "darkseagreen3", bins=200)
 mean(aba$Height)
 median(aba$Height)
 
@@ -67,20 +67,25 @@ mean(aba$Whole.weight)
 median(aba$Whole.weight)
 
 ggplot(data = aba, aes(x = Shucked.weight)) + geom_histogram(fill = "darkseagreen")
+mean(aba$Shucked.weight)
+median(aba$Shucked.weight)
 
 ggplot(data = aba, aes(x = Viscera.weight)) + geom_histogram(fill = "darkseagreen1")
+mean(aba$Viscera.weight)
+median(aba$Viscera.weight)
 
 ggplot(data = aba, aes(x = Shell.weight)) + geom_histogram(fill = "darkseagreen2")
+mean(aba$Shell.weight)
+median(aba$Shell.weight)
 
 ggplot(data = aba, aes(x = Rings)) + geom_histogram(bins = 29, fill = "darkseagreen3")
-
-# Scatterplot of Diameter and Height
-ggplot(data = aba, aes(x = Diameter, y = Height)) + geom_point()
+mean(aba$Rings)
+median(aba$Rings)
 
 # Scatter plot of Diameter, Rings, and Sex with plotly
 ggplotly(ggplot(data = aba, aes(
   x = Diameter, y = Rings, color = Sex
-)) + geom_point() + scale_color_manual(values = c("#f8674f", "#2887c8", "#9fe2bf")))
+)) + geom_point() + scale_color_manual(values = c("#f8674f", "#2887c8", "#9fe2bf"))) 
 ```
 # Checking relationships amongst variables 
 
