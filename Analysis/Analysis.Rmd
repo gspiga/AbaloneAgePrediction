@@ -100,6 +100,7 @@ summary(fullMod)
 anova(fullMod)
 ```
 
+The VIF indicates that we have high multicollinearity and we will need to build a model accordingly. We now check if our response variable needs a transformation.
 
 ```{r}
 ### Checking Assumptions
@@ -112,9 +113,9 @@ boxcox(fullMod)
 # Now we use full log model
 logFullMod <- lm(log(Rings) ~ ., data = aba)
 summary(logFullMod)
-
 plot(logFullMod)
 ```
+
 ## Addressing Outliers
 
 ```{r}
@@ -131,6 +132,7 @@ aba[235:240, ]
 # We will drop observations 237 and 2052 since it is harming our assumption of normality in residuals 
 aba <- aba[-c(237, 2052),]
 ```
+
 # Addressing Multicollinearity
 
 ```{r}
@@ -156,7 +158,6 @@ summary(ridgeSug)
 ridgeSug <- lm(log(Rings) ~ Infant  + Length +  Diameter + Height+ Shucked.weight + Shell.weight, data = aba)
 summary(ridgeSug)
 ```
-
 
 
 ```{r}
