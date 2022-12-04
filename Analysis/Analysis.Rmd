@@ -102,7 +102,7 @@ anova(fullMod)
 vif(fullMod)
 ```
 
-The VIF indicates that we have high multicollinearity and we will need to build a model accordingly.
+The VIF indicates that we have high multicollinearity and we will need to build a model accordingly. We now check if our response variable needs a transformation.
 
 ```{r}
 ### Checking Assumptions
@@ -115,9 +115,9 @@ boxcox(fullMod)
 # Now we use full log model
 logFullMod <- lm(log(Rings) ~ ., data = aba)
 summary(logFullMod)
-
 plot(logFullMod)
 ```
+
 # Addressing Multicollinearity
 
 ```{r}
