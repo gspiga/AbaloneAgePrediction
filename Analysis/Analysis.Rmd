@@ -102,6 +102,7 @@ anova(fullMod)
 vif(fullMod)
 ```
 
+The VIF indicates that we have high multicollinearity and we will need to build a model accordingly.
 
 ```{r}
 ### Checking Assumptions
