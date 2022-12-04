@@ -18,7 +18,6 @@ library(ggplot2)
 library(GGally)
 library(plotly)
 library(ggcorrplot)
-library(car)
 ```
 
 # Loading in Data
@@ -99,7 +98,6 @@ ggcorrplot(
 fullMod <- lm(Rings ~ ., data = aba)
 summary(fullMod)
 anova(fullMod)
-vif(fullMod)
 ```
 
 
@@ -117,12 +115,28 @@ summary(logFullMod)
 
 plot(logFullMod)
 ```
+## Addressing Outliers
+
+```{r}
+aba[2050:2055,]
+#2052, despite its size being similar to other abalones, has an abnormally large weight and height
+
+# aba[160:166, ]
+# OBS 164 is an abnormally heavy large female abalone
+
+aba[235:240, ]
+# Obs 237 is an extremely young and tiny infant 
+
+
+# We will drop observations 237 and 2052 since it is harming our assumption of normality in residuals 
+aba <- aba[-c(237, 2052),]
+```
 # Addressing Multicollinearity
 
 ```{r}
 # Remove Shucked weight since full weight would be easier process
-noShuckMod <- lm(log(Rings) ~ .-Shucked.weight, data = aba)
-summary(noShuckMod)
+# noShuckMod <- lm(log(Rings) ~ .-Shucked.weight, data = aba)
+# summary(noShuckMod)
 
 # Male sex is becoming obviously insignifcant, so lets make new column where abalone is infant or not
 aba$Infant <- as.factor(ifelse(aba$Sex == 'I', 'Y','N'))
@@ -134,7 +148,79 @@ summary(redMod)
 ```
 
 ```{r}
-anova(logFullMod, redMod)
+# Model suggested by ridge regression in mine.RMD, took out whole weight
+ridgeSug <- lm(log(Rings) ~ Infant + Length +  Diameter + Height+ Shucked.weight + Viscera.weight + Shell.weight, data = aba)
+summary(ridgeSug)
 
-stepAIC(logFullMod, scope = list("lower" = redMod, "upper" = logFullMod), direction = "forward")
+# Lets drop viscera weight 
+ridgeSug <- lm(log(Rings) ~ Infant  + Length +  Diameter + Height+ Shucked.weight + Shell.weight, data = aba)
+summary(ridgeSug)
+```
+
+
+
+```{r}
+#anova(logFullMod, redMod)
+
+nullModel <- lm(log(Rings) ~ 1, data = aba)
+fullModI <- lm(log(Rings) ~ .-Sex, data = aba)
+
+
+AICstair <-
+  stepAIC(
+    nullModel,
+    scope = list("lower" = nullModel , "upper" = ridgeSug),
+    direction = "forward",
+    k = 2,
+  )
+
+BICstair <-
+  stepAIC(
+    nullModel,
+    scope = list("lower" = nullModel , "upper" = ridgeSug),
+    direction = "forward",
+    k = log(nrow(aba)),
+  )
+
+AICstair
+```
+```{r}
+# We notice that length is the last to be added via step AIC, as well as it is highly correlated with variables (diameter = 0.99), we will drop it 
+# BIC also suggests we drop Length 
+postStepModel <-
+  lm(log(Rings) ~ Infant + Diameter + Height + Shucked.weight + Shell.weight,
+     data = aba)
+summary(postStepModel)
+
+# Test with stepAIC once more 
+AICstair2 <-
+  stepAIC(
+    nullModel,
+    scope = list("lower" = nullModel , "upper" = postStepModel),
+    direction = "forward",
+    k = 2,
+  )
+
+BICstair2 <-
+  stepAIC(
+    nullModel,
+    scope = list("lower" = nullModel , "upper" = postStepModel),
+    direction = "forward",
+    k = log(nrow(aba)),
+  )
+```
+
+
+```{r}
+# Checking for outliers
+plot(postStepModel)
+
+# aba[2050:2055,]
+# #2052, despite its size being similar to other abalones, has an abnormally large weight and height
+# 
+# aba[160:166, ]
+# # OBS 164 is an abnormally heavy large female abalone
+# 
+# aba[235:240, ]
+# # Obs 237 is an extremely young and tiny infant 
 ```
