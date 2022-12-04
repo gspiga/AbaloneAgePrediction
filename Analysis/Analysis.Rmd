@@ -51,12 +51,20 @@ any(is.na(aba))
 
 # Histrogram of Length
 ggplot(data = aba, aes(x = Length)) + geom_histogram(fill = "darkseagreen1")
+mean(aba$Length)
+median(aba$Length)
 
 ggplot(data = aba, aes(x = Diameter)) + geom_histogram(fill = "darkseagreen2")
+mean(aba$Diameter)
+median(aba$Diameter)
 
 ggplot(data = aba, aes(x = Height)) + geom_histogram(fill = "darkseagreen3")
+mean(aba$Height)
+median(aba$Height)
 
 ggplot(data = aba, aes(x = Whole.weight)) + geom_histogram(fill = "darkseagreen4")
+mean(aba$Whole.weight)
+median(aba$Whole.weight)
 
 ggplot(data = aba, aes(x = Shucked.weight)) + geom_histogram(fill = "darkseagreen")
 
