@@ -269,16 +269,16 @@ head(aba_red, 10)
 intModel <- lm(log(Rings) ~ .^2, data = aba_red)
 summary(intModel)
 
-# Drop all non-signicant variables
+# Drop all non-signicant variables: height:shucked weight, height:infant, shucked.weight:shellweight, shell.weight:infant
 
 intModel.red <-
   lm(
-    log(Rings) ~ Height + Shucked.weight + Shell.weight + Diameter + Infant + Height:Infant + Height:Diameter + Shucked.weight:Diameter + Shucked.weight:Infant + Diameter:Infant,
+    log(Rings) ~ Height + Shucked.weight + Shell.weight + Diameter + Infant + Height:Diameter + Shucked.weight:Diameter + Shucked.weight:Infant + Diameter:Infant,
     data = aba_red
   )
 summary(intModel.red)
 
-# Removing non significant variable Diameter:Shucked Weight once more
+# Removing non significant variable Diameter:Infant 
 intModel.red <-
   lm(
     log(Rings) ~ Height + Shucked.weight + Shell.weight + Diameter + Infant + Height:Infant + Height:Diameter + Shucked.weight:Diameter + Shucked.weight:Infant,
@@ -307,10 +307,10 @@ BICstair3 <-
   )
 
 
-# BIC suggests we drop interaction between height and infant 
+# BIC suggests we drop interaction between height:infant 
 intModel.final <-
   lm(
-    log(Rings) ~ Height + Shucked.weight + Shell.weight + Diameter + Infant + Height:Diameter + Shucked.weight:Diameter + Shucked.weight:Infant,
+    log(Rings) ~ Height + Shucked.weight + Shell.weight + Diameter + Infant+ Height:Diameter + Shucked.weight:Diameter + Shucked.weight:Infant,
     data = aba_red
   )
 summary(intModel.final)
