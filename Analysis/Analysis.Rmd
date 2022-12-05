@@ -257,3 +257,61 @@ plot(postStepModel)
 # aba[235:240, ]
 # # Obs 237 is an extremely young and tiny infant 
 ```
+
+# Checking for Interactions amongst remianing variables 
+
+```{r}
+# Reducing the abalone dataset
+aba_red <- aba[,c("Height", "Shucked.weight", "Shell.weight", "Diameter", "Infant", "Rings")]
+head(aba_red, 10)
+
+# Now we build a model with all our variabels and interactions
+intModel <- lm(log(Rings) ~ .^2, data = aba_red)
+summary(intModel)
+
+# Drop all non-signicant variables
+
+intModel.red <-
+  lm(
+    log(Rings) ~ Height + Shucked.weight + Shell.weight + Diameter + Infant + Height:Infant + Height:Diameter + Shucked.weight:Diameter + Shucked.weight:Infant + Diameter:Infant,
+    data = aba_red
+  )
+summary(intModel.red)
+
+# Removing non significant variable Diameter:Shucked Weight once more
+intModel.red <-
+  lm(
+    log(Rings) ~ Height + Shucked.weight + Shell.weight + Diameter + Infant + Height:Infant + Height:Diameter + Shucked.weight:Diameter + Shucked.weight:Infant,
+    data = aba_red
+  )
+summary(intModel.red)
+
+cat("\n Checking AIC now \n")
+# AIC step with interactions 
+AICstair3 <-
+  stepAIC(
+    nullModel,
+    scope = list("lower" = nullModel , "upper" = intModel.red),
+    direction = "forward",
+    k = 2,
+  )
+
+cat("\n Checking BIC now \n")
+# BICstepwise with int 
+BICstair3 <-
+  stepAIC(
+    nullModel,
+    scope = list("lower" = nullModel , "upper" = intModel.red),
+    direction = "forward",
+    k = log(nrow(aba)),
+  )
+
+
+# BIC suggests we drop interaction between height and infant 
+intModel.final <-
+  lm(
+    log(Rings) ~ Height + Shucked.weight + Shell.weight + Diameter + Infant + Height:Diameter + Shucked.weight:Diameter + Shucked.weight:Infant,
+    data = aba_red
+  )
+summary(intModel.final)
+```
