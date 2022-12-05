@@ -88,13 +88,20 @@ ggplotly(ggplot(data = aba, aes(
   x = Diameter, y = Rings, color = Sex
 )) + geom_point() + scale_color_manual(values = c("#f8674f", "#2887c8", "#9fe2bf"))) 
 
+# For pie chart 
+colors <- c("#f8674f", "#2887c8", "#9fe2bf")
+
 fig1 <-
   plot_ly(
     data = data.frame(table(aba$Sex)),
     labels = ~ Var1,
     values = ~ Freq,
-    type = 'pie'
-  )
+    type = 'pie',
+    marker = list(
+      colors = colors,
+      line = list(color = '#FFFFFF', width = 1.5)
+    )
+  ) %>% layout(title = "Pie Chart of Abalone Sex")
 fig1
 ```
 # Checking relationships amongst variables 
