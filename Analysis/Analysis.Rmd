@@ -59,7 +59,7 @@ ggplot(data = aba, aes(x = Diameter)) + geom_histogram(fill = "darkseagreen2")
 mean(aba$Diameter)
 median(aba$Diameter)
 
-ggplot(data = aba, aes(x = Height)) + geom_histogram(fill = "darkseagreen3", bins=200)
+ggplot(data = aba, aes(x = Height)) + geom_histogram(fill = "darkseagreen3", bins=100)
 mean(aba$Height)
 median(aba$Height)
 
@@ -87,6 +87,15 @@ median(aba$Rings)
 ggplotly(ggplot(data = aba, aes(
   x = Diameter, y = Rings, color = Sex
 )) + geom_point() + scale_color_manual(values = c("#f8674f", "#2887c8", "#9fe2bf"))) 
+
+fig1 <-
+  plot_ly(
+    data = data.frame(table(aba$Sex)),
+    labels = ~ Var1,
+    values = ~ Freq,
+    type = 'pie'
+  )
+fig1
 ```
 # Checking relationships amongst variables 
 
