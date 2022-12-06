@@ -5,6 +5,12 @@ date: "2022-12-02"
 ---
 
 ```{r}
+library(MASS)
+library(glmnet)
+
+```
+
+```{r}
 aba <- read.table("abalone.txt", sep = ",")
 # Fixing Column names 
 names(aba) <-
@@ -31,37 +37,65 @@ any(is.na(aba))
 fullMod <- lm(Rings ~ ., data = aba)
 summary(fullMod)
 anova(fullMod)
-library(MASS)
+
 boxcox(fullMod)
 
-logMod <- lm(log(Rings)~., data=aba)
+logMod <- lm(log(Rings) ~ ., data = aba)
 summary(logMod)
 anova(logMod)
 
-logMod <- lm(log(Rings)~., data=aba)
+logMod <- lm(log(Rings) ~ ., data = aba)
 summary(logMod)
 
 pairs(aba)
 
-guess <- lm(log(Rings)~Sex+Diameter+Height+Whole.weight+Shucked.weight+Shell.weight, data=aba)
+guess <-
+  lm(
+    log(Rings) ~ Infant + Diameter + Height + Whole.weight + Shucked.weight +
+      Shell.weight,
+    data = aba
+  )
 summary(guess)
 summary(logMod)
 
-install.packages("glmnet")
 response <- aba$Rings
-predictors <- data.matrix(aba[, c("Sex","Length", "Diameter", "Height", "Whole.weight", "Shucked.weight","Viscera.weight","Shell.weight")])
+predictors <-
+  data.matrix(aba[, c(
+    "Infant",
+    "Length",
+    "Diameter",
+    "Height",
+    "Whole.weight",
+    "Shucked.weight",
+    "Viscera.weight",
+    "Shell.weight"
+  )])
 response
 predictors
 
-library(glmnet)
-ridgeModel <- glmnet(predictors,response,alpha=0)
+ridgeModel <- glmnet(predictors, response, alpha = 0)
 
-cv_model <- cv.glmnet(predictors,response,alpha=0)
+cv_model <- cv.glmnet(predictors, response, alpha = 0)
 best_lambda <- cv_model$lambda.min
 best_lambda
 
-best_model <- glmnet(predictors,response,alpha=0, lambda=best_lambda)
+best_model <-
+  glmnet(predictors, response, alpha = 0, lambda = best_lambda)
 coef(best_model)
 
-idunno <- linearRidge(Rings~.,data=aba)
+#idunno <- linearRidge(Rings~.,data=aba)
+```
+```{r}
+# LASSO Regression 
+
+LASSOModel <- glmnet(predictors,response,alpha=1, nfolds = 20)
+
+cv_model <- cv.glmnet(predictors,response,alpha=1, nfolds = 20)
+best_lambda <- cv_model$lambda.min
+best_lambda
+
+best_model <- glmnet(predictors,response,alpha=1, lambda=best_lambda)
+coef(best_model)
+
+
 ```

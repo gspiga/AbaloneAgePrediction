@@ -160,7 +160,6 @@ aba[2050:2055,]
 aba[235:240, ]
 # Obs 237 is an extremely young and tiny infant 
 
-
 # We will drop observations 237 and 2052 since it is harming our assumption of normality in residuals 
 aba <- aba[-c(237, 2052),]
 ```
@@ -168,13 +167,9 @@ aba <- aba[-c(237, 2052),]
 # Addressing Multicollinearity
 
 ```{r}
-# Remove Shucked weight since full weight would be easier process
-# noShuckMod <- lm(log(Rings) ~ .-Shucked.weight, data = aba)
-# summary(noShuckMod)
-
 # Male sex is becoming obviously insignifcant, so lets make new column where abalone is infant or not
 aba$Infant <- as.factor(ifelse(aba$Sex == 'I', 'Y','N'))
-aba$Infant
+#aba$Infant
 
 # Clean model by removing Length, and Viscera weight
 redMod <- lm(log(Rings) ~ Infant + Diameter + Height+ Whole.weight, data = aba)
@@ -244,20 +239,6 @@ BICstair2 <-
 ```
 
 
-```{r}
-# Checking for outliers
-plot(postStepModel)
-
-# aba[2050:2055,]
-# #2052, despite its size being similar to other abalones, has an abnormally large weight and height
-# 
-# aba[160:166, ]
-# # OBS 164 is an abnormally heavy large female abalone
-# 
-# aba[235:240, ]
-# # Obs 237 is an extremely young and tiny infant 
-```
-
 # Checking for Interactions amongst remianing variables 
 
 ```{r}
@@ -314,4 +295,6 @@ intModel.final <-
     data = aba_red
   )
 summary(intModel.final)
+
+plot(intModel.final)
 ```
